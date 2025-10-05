@@ -5,7 +5,7 @@
 / {
 	
 	chosen {
-		bootargs = "earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait uio_pdrv_genirq.of_id=generic-uio cpuidle.off=1";
+		bootargs = "earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait cma=128M uio_pdrv_genirq.of_id=generic-uio cpuidle.off=1";
 	};
 	
 	amba {
