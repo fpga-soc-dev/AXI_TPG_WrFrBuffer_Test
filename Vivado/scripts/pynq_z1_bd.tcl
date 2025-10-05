@@ -218,6 +218,7 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.HAS_AXI4S_SLAVE {1} \
     CONFIG.MAX_DATA_WIDTH {8} \
+    CONFIG.SAMPLES_PER_CLOCK {2} \
   ] $v_tpg_0
 
 
@@ -227,18 +228,19 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
     CONFIG.AXIMM_ADDR_WIDTH {64} \
     CONFIG.HAS_BGR8 {1} \
     CONFIG.HAS_BGRX8 {1} \
+    CONFIG.HAS_RGB8 {1} \
     CONFIG.HAS_RGBX8 {1} \
-    CONFIG.HAS_UYVY8 {0} \
-    CONFIG.HAS_Y8 {0} \
-    CONFIG.HAS_YUV8 {0} \
-    CONFIG.HAS_YUVX8 {0} \
-    CONFIG.HAS_YUYV8 {0} \
-    CONFIG.HAS_Y_UV8 {0} \
-    CONFIG.HAS_Y_UV8_420 {0} \
-    CONFIG.HAS_Y_U_V8 {0} \
-    CONFIG.HAS_Y_U_V8_420 {0} \
+    CONFIG.HAS_UYVY8 {1} \
+    CONFIG.HAS_Y8 {1} \
+    CONFIG.HAS_YUV8 {1} \
+    CONFIG.HAS_YUVX8 {1} \
+    CONFIG.HAS_YUYV8 {1} \
+    CONFIG.HAS_Y_UV8 {1} \
+    CONFIG.HAS_Y_UV8_420 {1} \
+    CONFIG.HAS_Y_U_V8 {1} \
+    CONFIG.HAS_Y_U_V8_420 {1} \
     CONFIG.MAX_DATA_WIDTH {8} \
-    CONFIG.SAMPLES_PER_CLOCK {1} \
+    CONFIG.SAMPLES_PER_CLOCK {2} \
   ] $v_frmbuf_wr_0
 
 
@@ -258,6 +260,7 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
     CONFIG.C_HAS_ASYNC_CLK {1} \
     CONFIG.C_M_AXIS_VIDEO_DATA_WIDTH {8} \
     CONFIG.C_NATIVE_COMPONENT_WIDTH {8} \
+    CONFIG.C_PIXELS_PER_CLOCK {2} \
   ] $v_vid_in_axi4s_0
 
 
@@ -273,7 +276,7 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_1 ]
   set_property -dict [list \
     CONFIG.CONST_VAL {0} \
-    CONFIG.CONST_WIDTH {24} \
+    CONFIG.CONST_WIDTH {48} \
   ] $xlconstant_1
 
 

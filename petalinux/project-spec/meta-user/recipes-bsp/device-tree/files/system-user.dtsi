@@ -60,9 +60,8 @@
 
 &tpg_top_v_frmbuf_wr_0 {
 	#dma-cells = <1>;
-	compatible = "xlnx,axi-frmbuf-wr-v2";
+	compatible = "xlnx,v-frmbuf-wr-3.0", "xlnx,axi-frmbuf-wr-v2.2";
 	xlnx,dma-addr-width = <32>;
-	xlnx,vid-formats = "bgr888","rgb888","xbgr8888","abgr8888";
 	reset-gpios = <&gpio0 55 1>;
 };
 
