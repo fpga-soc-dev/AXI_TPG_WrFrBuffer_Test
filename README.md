@@ -1,4 +1,4 @@
-# AXI GPIO IP Example 
+# AXI TPG and AXI Frame Buffer Example
 
 ## Setup Environment
 - Vivado 2024.2
