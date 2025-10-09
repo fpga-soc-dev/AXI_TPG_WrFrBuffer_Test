@@ -125,15 +125,12 @@ if { $bCheckIPs == 1 } {
 xilinx.com:ip:proc_sys_reset:*\
 xilinx.com:ip:processing_system7:*\
 xilinx.com:ip:smartconnect:*\
-xilinx.com:ip:clk_wiz:*\
 xilinx.com:ip:xlconcat:*\
 xilinx.com:ip:xlslice:*\
+xilinx.com:ip:axi_gpio:*\
 xilinx.com:ip:v_tpg:*\
-xilinx.com:ip:v_frmbuf_wr:*\
-xilinx.com:ip:v_tc:*\
-xilinx.com:ip:v_vid_in_axi4s:*\
 xilinx.com:ip:axi_data_fifo:*\
-xilinx.com:ip:xlconstant:*\
+xilinx.com:ip:v_frmbuf_wr:*\
 "
 
    set list_ips_missing ""
@@ -200,68 +197,24 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   # Create interface pins
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 s_axi_CTRL
 
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 s_axi_CTRL1
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 ctrl
-
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 s_axi_CTRL1
 
 
   # Create pins
-  create_bd_pin -dir I -type clk CLK_148_5
+  create_bd_pin -dir I -type clk CLK100
   create_bd_pin -dir I -type rst LED3
-  create_bd_pin -dir I -type rst ap_rst_n
+  create_bd_pin -dir I -type rst aresetn
   create_bd_pin -dir O -type intr interrupt
 
   # Create instance: v_tpg_0, and set properties
   set v_tpg_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_tpg v_tpg_0 ]
   set_property -dict [list \
-    CONFIG.HAS_AXI4S_SLAVE {1} \
+    CONFIG.HAS_AXI4S_SLAVE {0} \
     CONFIG.MAX_DATA_WIDTH {8} \
     CONFIG.SAMPLES_PER_CLOCK {2} \
   ] $v_tpg_0
-
-
-  # Create instance: v_frmbuf_wr_0, and set properties
-  set v_frmbuf_wr_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_frmbuf_wr v_frmbuf_wr_0 ]
-  set_property -dict [list \
-    CONFIG.AXIMM_ADDR_WIDTH {64} \
-    CONFIG.HAS_BGR8 {1} \
-    CONFIG.HAS_BGRX8 {1} \
-    CONFIG.HAS_RGB8 {1} \
-    CONFIG.HAS_RGBX8 {1} \
-    CONFIG.HAS_UYVY8 {1} \
-    CONFIG.HAS_Y8 {1} \
-    CONFIG.HAS_YUV8 {1} \
-    CONFIG.HAS_YUVX8 {1} \
-    CONFIG.HAS_YUYV8 {1} \
-    CONFIG.HAS_Y_UV8 {1} \
-    CONFIG.HAS_Y_UV8_420 {1} \
-    CONFIG.HAS_Y_U_V8 {1} \
-    CONFIG.HAS_Y_U_V8_420 {1} \
-    CONFIG.MAX_DATA_WIDTH {8} \
-    CONFIG.SAMPLES_PER_CLOCK {2} \
-  ] $v_frmbuf_wr_0
-
-
-  # Create instance: v_tc_0, and set properties
-  set v_tc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_tc v_tc_0 ]
-  set_property -dict [list \
-    CONFIG.HAS_AXI4_LITE {true} \
-    CONFIG.VIDEO_MODE {1080p} \
-    CONFIG.enable_detection {false} \
-  ] $v_tc_0
-
-
-  # Create instance: v_vid_in_axi4s_0, and set properties
-  set v_vid_in_axi4s_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_vid_in_axi4s v_vid_in_axi4s_0 ]
-  set_property -dict [list \
-    CONFIG.C_ADDR_WIDTH {13} \
-    CONFIG.C_HAS_ASYNC_CLK {1} \
-    CONFIG.C_M_AXIS_VIDEO_DATA_WIDTH {8} \
-    CONFIG.C_NATIVE_COMPONENT_WIDTH {8} \
-    CONFIG.C_PIXELS_PER_CLOCK {2} \
-  ] $v_vid_in_axi4s_0
 
 
   # Create instance: axi_data_fifo_0, and set properties
@@ -272,49 +225,45 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   ] $axi_data_fifo_0
 
 
-  # Create instance: xlconstant_1, and set properties
-  set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_1 ]
+  # Create instance: v_frmbuf_wr_0, and set properties
+  set v_frmbuf_wr_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_frmbuf_wr v_frmbuf_wr_0 ]
   set_property -dict [list \
-    CONFIG.CONST_VAL {0} \
-    CONFIG.CONST_WIDTH {48} \
-  ] $xlconstant_1
+    CONFIG.AXIMM_ADDR_WIDTH {64} \
+    CONFIG.HAS_BGR8 {1} \
+    CONFIG.HAS_BGRX8 {0} \
+    CONFIG.HAS_RGB8 {1} \
+    CONFIG.HAS_RGBX8 {0} \
+    CONFIG.HAS_UYVY8 {1} \
+    CONFIG.HAS_Y8 {0} \
+    CONFIG.HAS_YUV8 {1} \
+    CONFIG.HAS_YUVX8 {0} \
+    CONFIG.HAS_YUYV8 {1} \
+    CONFIG.HAS_Y_UV8 {0} \
+    CONFIG.HAS_Y_UV8_420 {0} \
+    CONFIG.HAS_Y_U_V8 {0} \
+    CONFIG.HAS_Y_U_V8_420 {0} \
+    CONFIG.MAX_DATA_WIDTH {8} \
+    CONFIG.SAMPLES_PER_CLOCK {2} \
+  ] $v_frmbuf_wr_0
 
 
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins v_frmbuf_wr_0/s_axi_CTRL] [get_bd_intf_pins s_axi_CTRL1]
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins axi_data_fifo_0/M_AXI] [get_bd_intf_pins M_AXI]
-  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins v_tc_0/ctrl] [get_bd_intf_pins ctrl]
   connect_bd_intf_net -intf_net ps_ctrl_axi_M00_AXI [get_bd_intf_pins s_axi_CTRL] [get_bd_intf_pins v_tpg_0/s_axi_CTRL]
-  connect_bd_intf_net -intf_net v_frmbuf_wr_0_m_axi_mm_video [get_bd_intf_pins v_frmbuf_wr_0/m_axi_mm_video] [get_bd_intf_pins axi_data_fifo_0/S_AXI]
+  connect_bd_intf_net -intf_net v_frmbuf_wr_0_m_axi_mm_video [get_bd_intf_pins axi_data_fifo_0/S_AXI] [get_bd_intf_pins v_frmbuf_wr_0/m_axi_mm_video]
   connect_bd_intf_net -intf_net v_tpg_0_m_axis_video [get_bd_intf_pins v_tpg_0/m_axis_video] [get_bd_intf_pins v_frmbuf_wr_0/s_axis_video]
-  connect_bd_intf_net -intf_net v_vid_in_axi4s_0_video_out [get_bd_intf_pins v_tpg_0/s_axis_video] [get_bd_intf_pins v_vid_in_axi4s_0/video_out]
 
   # Create port connections
-  connect_bd_net -net ap_rst_n_1  [get_bd_pins ap_rst_n] \
-  [get_bd_pins v_frmbuf_wr_0/ap_rst_n] \
-  [get_bd_pins axi_data_fifo_0/aresetn]
-  connect_bd_net -net clk_wiz_0_clk_out1  [get_bd_pins CLK_148_5] \
+  connect_bd_net -net aresetn_1  [get_bd_pins aresetn] \
+  [get_bd_pins axi_data_fifo_0/aresetn] \
+  [get_bd_pins v_frmbuf_wr_0/ap_rst_n]
+  connect_bd_net -net ps7_0_FCLK_CLK0  [get_bd_pins CLK100] \
   [get_bd_pins v_tpg_0/ap_clk] \
-  [get_bd_pins v_frmbuf_wr_0/ap_clk] \
-  [get_bd_pins v_tc_0/s_axi_aclk] \
-  [get_bd_pins v_tc_0/clk] \
-  [get_bd_pins v_vid_in_axi4s_0/aclk] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_io_in_clk] \
-  [get_bd_pins axi_data_fifo_0/aclk]
+  [get_bd_pins axi_data_fifo_0/aclk] \
+  [get_bd_pins v_frmbuf_wr_0/ap_clk]
   connect_bd_net -net v_frmbuf_wr_0_interrupt  [get_bd_pins v_frmbuf_wr_0/interrupt] \
   [get_bd_pins interrupt]
-  connect_bd_net -net v_tc_0_active_video_out  [get_bd_pins v_tc_0/active_video_out] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_active_video]
-  connect_bd_net -net v_tc_0_hblank_out  [get_bd_pins v_tc_0/hblank_out] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_hblank]
-  connect_bd_net -net v_tc_0_hsync_out  [get_bd_pins v_tc_0/hsync_out] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_hsync]
-  connect_bd_net -net v_tc_0_vblank_out  [get_bd_pins v_tc_0/vblank_out] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_vblank]
-  connect_bd_net -net v_tc_0_vsync_out  [get_bd_pins v_tc_0/vsync_out] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_vsync]
-  connect_bd_net -net xlconstant_1_dout  [get_bd_pins xlconstant_1/dout] \
-  [get_bd_pins v_vid_in_axi4s_0/vid_data]
   connect_bd_net -net xlslice_0_Dout  [get_bd_pins LED3] \
   [get_bd_pins v_tpg_0/ap_rst_n]
 
@@ -360,16 +309,17 @@ proc create_root_design { parentCell } {
 
   set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
 
+  set GPIO [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO ]
+
 
   # Create ports
   set CLK100 [ create_bd_port -dir O -type clk CLK100 ]
   set FCLK_RESET_N [ create_bd_port -dir O -type rst FCLK_RESET_N ]
   set LED2 [ create_bd_port -dir O -from 0 -to 0 LED2 ]
   set LED3 [ create_bd_port -dir O -from 0 -to 0 LED3 ]
-  set CLK_148_5 [ create_bd_port -dir O -type clk CLK_148_5 ]
 
-  # Create instance: rst_clk_wiz_0_148_5M, and set properties
-  set rst_clk_wiz_0_148_5M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_148_5M ]
+  # Create instance: rst_clk_wiz_0_100M, and set properties
+  set rst_clk_wiz_0_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_100M ]
 
   # Create instance: ps7_0, and set properties
   set ps7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7 ps7_0 ]
@@ -853,25 +803,9 @@ proc create_root_design { parentCell } {
   ] $ps_ctrl_axi
 
 
-  # Create instance: clk_wiz_0, and set properties
-  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0 ]
-  set_property -dict [list \
-    CONFIG.CLKOUT1_JITTER {217.614} \
-    CONFIG.CLKOUT1_PHASE_ERROR {245.344} \
-    CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {148.500} \
-    CONFIG.MMCM_CLKFBOUT_MULT_F {37.125} \
-    CONFIG.MMCM_CLKOUT0_DIVIDE_F {6.250} \
-    CONFIG.MMCM_DIVCLK_DIVIDE {4} \
-    CONFIG.RESET_PORT {reset} \
-    CONFIG.RESET_TYPE {ACTIVE_HIGH} \
-    CONFIG.USE_LOCKED {false} \
-    CONFIG.USE_RESET {false} \
-  ] $clk_wiz_0
-
-
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0 ]
-  set_property CONFIG.NUM_PORTS {1} $xlconcat_0
+  set_property CONFIG.NUM_PORTS {2} $xlconcat_0
 
 
   # Create instance: smartconnect_0, and set properties
@@ -897,40 +831,51 @@ proc create_root_design { parentCell } {
   ] $xlslice_1
 
 
+  # Create instance: axi_gpio_0, and set properties
+  set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
+  set_property -dict [list \
+    CONFIG.C_ALL_INPUTS {1} \
+    CONFIG.C_GPIO_WIDTH {6} \
+    CONFIG.C_INTERRUPT_PRESENT {1} \
+  ] $axi_gpio_0
+
+
   # Create instance: tpg_top
   create_hier_cell_tpg_top [current_bd_instance .] tpg_top
 
   # Create interface connections
+  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net ps7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins ps7_0/DDR]
   connect_bd_intf_net -intf_net ps7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins ps7_0/FIXED_IO]
   connect_bd_intf_net -intf_net ps7_0_M_AXI_GP0 [get_bd_intf_pins ps7_0/M_AXI_GP0] [get_bd_intf_pins ps_ctrl_axi/S00_AXI]
   connect_bd_intf_net -intf_net ps_ctrl_axi_M00_AXI [get_bd_intf_pins ps_ctrl_axi/M00_AXI] [get_bd_intf_pins tpg_top/s_axi_CTRL]
   connect_bd_intf_net -intf_net ps_ctrl_axi_M01_AXI [get_bd_intf_pins ps_ctrl_axi/M01_AXI] [get_bd_intf_pins tpg_top/s_axi_CTRL1]
-  connect_bd_intf_net -intf_net ps_ctrl_axi_M02_AXI [get_bd_intf_pins ps_ctrl_axi/M02_AXI] [get_bd_intf_pins tpg_top/ctrl]
+  connect_bd_intf_net -intf_net ps_ctrl_axi_M02_AXI [get_bd_intf_pins ps_ctrl_axi/M02_AXI] [get_bd_intf_pins axi_gpio_0/S_AXI]
   connect_bd_intf_net -intf_net smartconnect_0_M00_AXI [get_bd_intf_pins smartconnect_0/M00_AXI] [get_bd_intf_pins ps7_0/S_AXI_HP0]
   connect_bd_intf_net -intf_net tpg_top_M_AXI [get_bd_intf_pins smartconnect_0/S00_AXI] [get_bd_intf_pins tpg_top/M_AXI]
 
   # Create port connections
-  connect_bd_net -net clk_wiz_0_clk_out1  [get_bd_pins clk_wiz_0/clk_out1] \
-  [get_bd_pins rst_clk_wiz_0_148_5M/slowest_sync_clk] \
-  [get_bd_pins ps_ctrl_axi/aclk] \
-  [get_bd_pins ps7_0/M_AXI_GP0_ACLK] \
-  [get_bd_pins ps7_0/S_AXI_HP0_ACLK] \
-  [get_bd_pins smartconnect_0/aclk] \
-  [get_bd_ports CLK_148_5] \
-  [get_bd_pins tpg_top/CLK_148_5]
+  connect_bd_net -net axi_gpio_0_ip2intc_irpt  [get_bd_pins axi_gpio_0/ip2intc_irpt] \
+  [get_bd_pins xlconcat_0/In1]
   connect_bd_net -net ps7_0_FCLK_CLK0  [get_bd_pins ps7_0/FCLK_CLK0] \
   [get_bd_ports CLK100] \
-  [get_bd_pins clk_wiz_0/clk_in1]
+  [get_bd_pins rst_clk_wiz_0_100M/slowest_sync_clk] \
+  [get_bd_pins ps_ctrl_axi/aclk] \
+  [get_bd_pins smartconnect_0/aclk] \
+  [get_bd_pins axi_gpio_0/s_axi_aclk] \
+  [get_bd_pins ps7_0/M_AXI_GP0_ACLK] \
+  [get_bd_pins ps7_0/S_AXI_HP0_ACLK] \
+  [get_bd_pins tpg_top/CLK100]
   connect_bd_net -net ps7_0_FCLK_RESET0_N  [get_bd_pins ps7_0/FCLK_RESET0_N] \
-  [get_bd_pins rst_clk_wiz_0_148_5M/ext_reset_in] \
+  [get_bd_pins rst_clk_wiz_0_100M/ext_reset_in] \
   [get_bd_ports FCLK_RESET_N]
   connect_bd_net -net ps7_0_GPIO_O  [get_bd_pins ps7_0/GPIO_O] \
   [get_bd_pins xlslice_0/Din] \
   [get_bd_pins xlslice_1/Din]
-  connect_bd_net -net rst_clk_wiz_0_148_5M_interconnect_aresetn  [get_bd_pins rst_clk_wiz_0_148_5M/interconnect_aresetn] \
-  [get_bd_pins ps_ctrl_axi/aresetn]
-  connect_bd_net -net rst_clk_wiz_0_148_5M_peripheral_aresetn  [get_bd_pins rst_clk_wiz_0_148_5M/peripheral_aresetn] \
+  connect_bd_net -net rst_clk_wiz_0_148_5M_interconnect_aresetn  [get_bd_pins rst_clk_wiz_0_100M/interconnect_aresetn] \
+  [get_bd_pins ps_ctrl_axi/aresetn] \
+  [get_bd_pins axi_gpio_0/s_axi_aresetn]
+  connect_bd_net -net rst_clk_wiz_0_148_5M_peripheral_aresetn  [get_bd_pins rst_clk_wiz_0_100M/peripheral_aresetn] \
   [get_bd_pins smartconnect_0/aresetn]
   connect_bd_net -net tpg_top_interrupt  [get_bd_pins tpg_top/interrupt] \
   [get_bd_pins xlconcat_0/In0]
@@ -941,11 +886,11 @@ proc create_root_design { parentCell } {
   [get_bd_pins tpg_top/LED3]
   connect_bd_net -net xlslice_1_Dout  [get_bd_pins xlslice_1/Dout] \
   [get_bd_ports LED2] \
-  [get_bd_pins tpg_top/ap_rst_n]
+  [get_bd_pins tpg_top/aresetn]
 
   # Create address segments
+  assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps7_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x43C10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps7_0/Data] [get_bd_addr_segs tpg_top/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
-  assign_bd_address -offset 0x43C20000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps7_0/Data] [get_bd_addr_segs tpg_top/v_tc_0/ctrl/Reg] -force
   assign_bd_address -offset 0x43C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps7_0/Data] [get_bd_addr_segs tpg_top/v_tpg_0/s_axi_CTRL/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces tpg_top/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs ps7_0/S_AXI_HP0/HP0_DDR_LOWOCM] -force
 

@@ -43,7 +43,6 @@
 &tpg_top_v_tpg_0 {
 	status = "okay";
 	reset-gpios = <&gpio0 54 1>;
-	xlnx,vtc = <&tpg_top_v_tc_0>;
 	ports {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -59,9 +58,6 @@
 };
 
 &tpg_top_v_frmbuf_wr_0 {
-	#dma-cells = <1>;
-	compatible = "xlnx,v-frmbuf-wr-3.0", "xlnx,axi-frmbuf-wr-v2.2";
-	xlnx,dma-addr-width = <32>;
 	reset-gpios = <&gpio0 55 1>;
 };
 

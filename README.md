@@ -138,3 +138,64 @@ Reciever:
 gst-launch-1.0 udpsrc port="5004" caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)RGB, depth=(string)8, width=(string)1280, height=(string)720, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! fpsdisplaysink text-overlay=true sync=true
 ```
 
+
+## Run TPG Test Application
+
+First, run the application. Please, check the video configuration in the main.
+
+```bash
+./tpg-test
+```
+
+You can change some features of the test pattern at runtime. 4 buttons and 2 switches on Pynq Z1 board have following functionality.
+
+```bash
+SW1 : Increase Motion Speed
+SW2 : Decrease Motion Speed
+BTN1: Cycle Background Pattern
+BTN2: Cycle Foreground Pattern
+BTN3: Increase Box Size
+BTN4: Decrease Box Size
+```
+
+Then, run a gstreamer pipeline based on video configuration
+
+RGB Gstreamer 640x480 
+```bash
+gst-launch-1.0 -v v4l2src device=/dev/video0 io-mode=dmabuf do-timestamp=true ! video/x-raw,format=RGB,width=640,height=480,framerate=60/1 ! queue max-size-buffers=0 ! rtpvrawpay pt=96 mtu=1200 ! udpsink host=192.168.1.20 port=5004 sync=false buffer-size=524288 
+```
+RGB Gstreamer 1280x720
+```bash
+gst-launch-1.0 -v v4l2src device=/dev/video0 io-mode=dmabuf do-timestamp=true ! video/x-raw,format=RGB,width=1280,height=720,framerate=60/1 ! queue max-size-buffers=0 ! rtpvrawpay pt=96 mtu=1200 ! udpsink host=192.168.1.20 port=5004 sync=false buffer-size=524288 
+```
+ 
+YUV 4:2:2(UYVY) Gstreamer  640x480 
+```bash
+gst-launch-1.0 -v v4l2src device=/dev/video0 io-mode=dmabuf do-timestamp=true ! video/x-raw,format=UYVY, width=640,height=480,framerate=60/1  ! queue  max-size-buffers=32 leaky=2  ! rtpvrawpay pt=96 mtu=1500 ! udpsink host=192.168.1.20 port=5004 sync=true 
+```
+YUV 4:2:2(UYVY) Gstreamer 1280x720
+```bash
+gst-launch-1.0 -v v4l2src device=/dev/video0 io-mode=dmabuf do-timestamp=true ! video/x-raw,format=UYVY, width=1280,height=720,framerate=60/1  ! queue  max-size-buffers=32 leaky=2  ! rtpvrawpay pt=96 mtu=1500 ! udpsink host=192.168.1.20 port=5004 sync=true 
+```
+
+On host PC
+
+RGB Gstreamer 640x480 
+```bash
+gst-launch-1.0 udpsrc port="5004" caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)RGB, depth=(string)8, width=(string)640, height=(string)480, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! fpsdisplaysink text-overlay=true video-sink=xvimagesink sync=true 
+```
+
+RGB Gstreamer 1280x720
+```bash
+gst-launch-1.0 udpsrc port="5004" caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)RGB, depth=(string)8, width=(string)1280, height=(string)720, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! fpsdisplaysink text-overlay=true video-sink=xvimagesink sync=true 
+```
+
+YUV 4:2:2(UYVY) Gstreamer  640x480 
+```bash
+gst-launch-1.0 -v udpsrc port=5004 caps="application/x-rtp,media=(string)video,clock-rate=(int)90000,encoding-name=(string)RAW,sampling=(string)YCbCr-4:2:2,depth=(string)8,width=(string)640,height=(string)480,layout=(string)interleaved,payload=(int)96" ! rtpjitterbuffer latency=100 ! rtpvrawdepay ! videoconvert !  fpsdisplaysink text-overlay=true video-sink=xvimagesink sync=true 
+```
+
+YUV 4:2:2(UYVY) Gstreamer 1280x720
+```bash
+gst-launch-1.0 -v   udpsrc port=5004 caps="application/x-rtp,media=(string)video,clock-rate=(int)90000,encoding-name=(string)RAW,sampling=(string)YCbCr-4:2:2,depth=(string)8,width=(string)1280,height=(string)720,layout=(string)interleaved,payload=(int)96" ! rtpjitterbuffer latency=100 ! rtpvrawdepay ! videoconvert !   fpsdisplaysink text-overlay=true video-sink=xvimagesink sync=true 
+```
