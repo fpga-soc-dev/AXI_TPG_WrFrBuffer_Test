@@ -1,1 +1,0 @@
-/home/sugar/Projects/fpga_soc_projects/AXI_TPG_WrFrBuffer_Test/apps/main.cpp
