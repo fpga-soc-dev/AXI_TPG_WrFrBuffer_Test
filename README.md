@@ -2,10 +2,9 @@
 
 ## Setup Environment
 - Vivado 2024.2
-- Petalinux 2024.2
+- Yocto
 - PYNQ Z1 Board
-- Ubuntu 24.04
-- [GStreamer](https://gstreamer.freedesktop.org/documentation/installing/index.html?gi-language=c)
+- Ubuntu 22.04
 
 
 ## Build Vivado Project
@@ -15,25 +14,26 @@ cd Vivado
 make
 ```
 
-## Build Petalinux Project
+## Build Yocto Project
+Check requirements for Yocto Build
+
+[Preparing host build](https://docs.yoctoproject.org/singleindex.html#preparing-the-build-host)
+
+[System Requirements](https://docs.yoctoproject.org/scarthgap/ref-manual/system-requirements.html#system-requirements)
+
+
+Install KAS tool
 ```bash
-petalinux-create --type project --template zynq --name <project_name> 
-petalinux-config --get-hw-description ../Vivado/pynq_z1.xsa --silentconfig
-```
-Note: Replace meta-user folder in the repository with the meta-user folder in project.
-```bash
-petalinux-build
-petalinux-package --boot --fsbl images/linux/zynq_fsbl.elf --u-boot images/linux/u-boot.elf --fpga images/linux/system.bit --force
-petalinux-package wic
-gedit build/rootfs.wks 
-```
-Note: default wks image's partitions are high(2G, 4G), you can change to 100M, 300M respectively
-```bash
-petalinux-package wic --wks build/rootfs.wks
+pip install kas
 ```
 
-Write generated .wic image(under `linux/images` folder) using tools such as Balena Etcher.
+Build project
+```bash
+cd yocto
+make
+```
 
+Write generated .wic image(under `yocto/build/tmp-glibc/deploy/images/pynq-z1/image-pynq-z1-pynq-z1.rootfs.wic` folder) using tools such as Balana Etcher.
 
 
 ## V4L2 and Gstreamer Commands
