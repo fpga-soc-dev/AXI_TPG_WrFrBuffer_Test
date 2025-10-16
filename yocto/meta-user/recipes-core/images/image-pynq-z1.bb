@@ -13,3 +13,6 @@ IMAGE_INSTALL:append = " gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plu
 IMAGE_INSTALL:append = " libgpiod libgpiod-dev libgpiod-tools"
 IMAGE_INSTALL:append = " tpg-driver"
 
+inherit extrausers
+EXTRA_USERS_PARAMS = "usermod -d /home/root root;"
+
