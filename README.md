@@ -21,11 +21,11 @@ runtime using the on-board switches/buttons.
 | Data flow    | `v_tpg` → AXI-Stream → `v_frmbuf_wr` → DDR (HP0)          |
 | Linux        | `/dev/video0` (V4L2), `/dev/v4l-subdev0`, `/dev/media0`   |
 | App          | `tpg-test` (C++20)                                        |
-| Toolchain    | Vivado **2024.2**, Yocto **Scarthgap** (kas)              |
+| Toolchain    | Vivado **2025.2**, Yocto **Scarthgap** (kas)              |
 
 ## Setup environment
 
-- Vivado 2024.2
+- Vivado 2025.2
 - Yocto Scarthgap + [kas](https://kas.readthedocs.io/)
 - PYNQ-Z1 board
 - Ubuntu 22.04 (or a similar Linux host)
